@@ -139,10 +139,6 @@ In which I keep track and categorize non-trivial things I've learned about how c
   * There are certain cases in which I don't have better alternatives at the moment:
     + Breaking from multiple nested loops (instead of one `if (...) { break; }` per loop)
     + Replace `break` in a `switch` (more granular than falling through)
-    + Performing cleanup in a constructor throwing an exception (since the destructor won't be called...)
-      - Alternatives to consider:
-        * Move the destructor code to a private function and call it both from the destructor and from the `catch block`
-        * Create RAII wrappers for each acquired responsibility and remove the destructor entirely. **Limit destructors to RAII objects handling a single responsiblity**
     + More generally factoring code when the control structure is complex
 
 - Sensitive data
