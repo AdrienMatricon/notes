@@ -141,6 +141,15 @@ In which I keep track and categorize non-trivial things I've learned about how c
     + Replace `break` in a `switch` (more granular than falling through)
     + More generally factoring code when the control structure is complex
 
+- `dynamic_cast`
+  * Relies on the vtable
+  * Therefore not usable if there is no virtual function
+
+- `const_cast`
+  * Basically the only case in which it can be legitimately used is to pass `const` variables to legacy APIs which should have been tagged `const` but weren't
+  * Modifying a `const` string literal would be bad, because string literals are allowed to overlap in memory
+  * More generally, modifying anything which is created (*i.e.* declared) `const` is undefined behavior
+
 - Sensitive data
   * If sensitive data is stored in dynamically allocated memory, then that memory should be set to 0 before being deallocated (including when a `vector` is reallocated to increase its capacity, etc)
   * Similarly, static memory holding sensitive data must also be cleared before the program exits
