@@ -596,6 +596,7 @@ In which I keep track and categorize non-trivial things I've learned about how c
         // Do stuff
     }
     ```
+  * However, it does not allow to differentiate between those constructors
 
 - Exceptions within a constructor
   * `try`/`catch` often necessary because **the destructor won't be called**: the lifetime of an object starts when the constructor finishes (first constructor if one calls another)
