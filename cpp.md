@@ -34,6 +34,25 @@ In which I keep track and categorize non-trivial things I've learned about how c
       - Beware of hidden proxy classes. They're not meant to be anything other than temporaries
       - More generally, you need to make sure of the return type of the functions you are calling
 
+- Implicit conversions between integers
+  * Integral promotion
+    + Integer types have "ranks" based on their width (*e.g.* `int` ranks higher than `short` and lower than `long`)
+    + Arithmetic operations do not accept bools, enums, etc, or types smaller than `int` as argument
+    + Passing values of such types as arguments automatically casts them to a higher-rank integer type that can hold all the values of that type (signed if both signed and unsigned work)
+    + For example, this means `int8_t + int8_t = int` and `uint8_t + uint8_t = int`
+    + Note that this impacts both size and signedness (but does not affect the value)
+    + Given that `int` can have an arbitary size, this may affect all enums, fixed-width types, etc
+  * Arithmetic conversion
+    + Arithmetic operations take parameters with the same type on both side
+    + After integral promotion, if the operands do not have the same type, another implicit conversion occurs
+    + If both operands have the same signedness, things work well and the smaller type is cast into the bigger type
+    + Otherwise conversion rules apply that always preserve the unsigned value but often (though not always) convert the signed one to unsigned, which usually leads to unwanted behavior
+    + For example, `5u > -1` evaluates to `false`
+  * Conclusion
+    + Always make sure your integers have the correct signedness (including literals)
+    + Never compare signed and unsigned
+    + If the unsigned type you're using isn't `unsigned int`, `unsigned long` or `unsigned long long`, handle the case in which the result of the operation is signed (*e.g.* `uint8_t + uint8_t = int` as mentioned above)
+
 - `new`/`delete`
   * Calling `delete` on a null pointer is allowed (does nothing), so no need to check that it's not null beforehand
   * operator `new`
