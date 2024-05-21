@@ -263,7 +263,8 @@ In which I keep track and categorize non-trivial things I've learned about how c
     ```c++
     decltype(auto) f() {return getVal();}
     ```
-    allows also allows to return `auto`, `auto&` or `auto&&` (exact same type returned by `getVal()`)
+    allows also allows to return `auto`, `auto&` or `auto&&` (exact same type returned by `getVal()`),
+    but beware that `return x;` will return an `X` while `return (x);` will return an `X&`
   * Overloads
     + Don't try to overload when there's perfect forwarding
       * `template <typename T> f(T&& var)` will catch everything, so an `f(int)` overload would require that exact type and passing it a short would not call the overload
