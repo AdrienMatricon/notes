@@ -22,6 +22,12 @@ In which I keep track and categorize non-trivial things I've learned about how c
     > `const` applies to the thing to its left. If there is nothing to its left, then it applies to the thing to its right.
 
     Personnally I find it less confusing to always write `const` to the right of what it applies to
+
+- Initializer lists
+   * `MyClass(std::initializer_list<T> aList);` allows to use the syntax `MyClass var{a, b, c};` or `MyClass var({a, b, c});`
+   * Write `A a({});` to call a constructor with an empty initializer list (since `A a{};` calls the default constructor)
+   * `void f(std::initializer_list<T> list);` also allows to use the syntax `f({a, b, c});`
+
 - `auto`
   * **Always use auto to declare local variables**
   * Using `auto` prevents mistakes and implicit conversions, and also more generally allows to make the code more robust to implementation changes
@@ -29,10 +35,15 @@ In which I keep track and categorize non-trivial things I've learned about how c
   * `auto s = myvector.size();` is correct even though `size()` returns an implementation-dependent type (type alias in the template)
   * `auto i = 0u;` is better than `unsigned int i = 0;` (which has the wrong type on the right side)
   * `auto i = unsigned int(0);` is even better, and more generic since you can also write `auto i = uint32_t(0);`
-  * `auto myVar = static_cast<MyType>(getVal());` makes it clear that a cast is happening when the type you get is not the type you want (ex: proxy classes)
-    + **WARNING:**
-      - Beware of hidden proxy classes. They're not meant to be anything other than temporaries
-      - More generally, you need to make sure of the return type of the functions you are calling
+  * It's recommended to use the uniform initilization syntax by default (`auto i = unsigned int{0};`, `auto i = uint32_t{0};`) and to make sure not to put in your interface ambiguous overloads with an `initializer_list` constructor if there is one (although there is one such overload in `std::vector`, for example, for historical reasons)
+  * Conclusion:
+    + Use `auto myVar = expr;` by default, to express that what matters is the type of the expression
+    + Use `auto myVar = MyType{ expr };` to enforce the type of the variable
+      - Handles proxy classes, which are not meant to be anything other than temporaries
+      - Handles platform-dependent integer promotions and conversions
+      - Prevents narrowing conversions (which `MyType( expr )` doesn't)
+    + Use `auto myVar = static_cast<MyType>( expr );` if a narrowing conversion is needed (e.g. `static_cast<int>(2.0)`)
+    + Use `auto myVar = MyType( expr );` when handling classes with an `initializer_list` constructor to make sure there is no ambiguity (especially since the compiler strongly prefers that constructor and will go out of its way to cast `expr` into a type allowing it to use it)
 
 - Implicit conversions between integers
   * Integral promotion
@@ -839,11 +850,6 @@ In which I keep track and categorize non-trivial things I've learned about how c
       *outputIt = f(*inputIt0, *inputIt1)
       ```
     + Could for example be used to implement `operator+=()` between vectors
-
-- Initializer lists
-   * `MyClass(std::initializer_list<T> aList);` allows to use the syntax `MyClass var{a, b, c};` or `MyClass var({a, b, c});`
-   * Write `A a({});` to call a constructor with an empty initializer list (since `A a{};` calls the default constructor)
-   * `void f(std::initializer_list<T> list);` also allows to use the syntax `f({a, b, c});`
 
 - `std::atomic`
   * Is usually more efficient than `std::mutex` with built-in types
