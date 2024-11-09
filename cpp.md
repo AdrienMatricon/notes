@@ -62,7 +62,7 @@ In which I keep track and categorize non-trivial things I've learned about how c
   * Conclusion
     + Always make sure your integers have the correct signedness (including literals)
     + Never compare signed and unsigned
-    + If the unsigned type you're using isn't `unsigned int`, `unsigned long` or `unsigned long long`, handle the case in which the result of the operation is signed (*e.g.* `uint8_t + uint8_t = int` as mentioned above)
+    + Never use types that are not guaranteed to be bigger than `int` (which includes all fixed-size integers) in an arithmetic operation
 
 - `new`/`delete`
   * Calling `delete` on a null pointer is allowed (does nothing), so no need to check that it's not null beforehand
